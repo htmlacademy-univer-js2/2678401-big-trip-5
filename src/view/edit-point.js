@@ -1,8 +1,8 @@
-import View from './abstract-view.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {parseFormatDateForInput} from '../util/date-time.js';
 import {POINT_TYPE_LIST} from '../domain/model/mock/mock-point.js';
 
-export default class EditPointView extends View {
+export default class EditPointView extends AbstractView {
   constructor(point = null, destination = null, availableOffers = [], selectedOffersIds = [], allDestinations = []) {
     super();
     this.point = point;
@@ -139,5 +139,19 @@ export default class EditPointView extends View {
         ` : ''}
       </form>
     `;
+  }
+
+  setSubmitHandler(handler) {
+    this.element.addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      handler();
+    });
+  }
+
+  setRollupHandler(handler) {
+    const btn = this.element.querySelector('.event__rollup-btn');
+    if (btn) {
+      btn.addEventListener('click', handler);
+    }
   }
 }

@@ -7,3 +7,7 @@ env:
   browser: true
 
 extends: 'htmlacademy/vanilla'
+
+rules:
+  no-trailing-spaces: off
+  indent: off
