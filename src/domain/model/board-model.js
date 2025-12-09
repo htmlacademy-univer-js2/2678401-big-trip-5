@@ -30,4 +30,16 @@ export default class BoardModel {
   getAllDestinations() {
     return this.destinations;
   }
+
+  updatePoint(updatedPoint) {
+    const index = this.points.findIndex((p) => p.id === updatedPoint.id);
+    if (index === -1) {
+      return;
+    }
+    this.points = [
+      ...this.points.slice(0, index),
+      updatedPoint,
+      ...this.points.slice(index + 1)
+    ];
+  }
 }

@@ -5,10 +5,12 @@ import EditPointView from '../view/edit-point.js';
 import PointView from '../view/point.js';
 import CreatePointView from '../view/create-point.js';
 import EmptyPointView from '../view/empty-point.js';
+import PointPresenter from './point-presenter.js';
 
 export default class BoardPresenter {
   constructor(model) {
     this.model = model;
+    this.pointPresenters = [];
   }
 
   init() {
@@ -51,7 +53,7 @@ export default class BoardPresenter {
 
     const pointsToRender = points.slice(0, 3);
 
-    pointsToRender.forEach((point) => {
+    this.pointPresenters = pointsToRender.map((point) => {
       const destination = this.model.getDestinationById(point.destination);
       const selectedOfferList = this.model.getSelectedOffers(point);
 
@@ -59,43 +61,39 @@ export default class BoardPresenter {
       listItem.className = 'trip-events__item';
       tripEventsList.appendChild(listItem);
 
-      const pointView = new PointView(point, destination, selectedOfferList);
-      listItem.appendChild(pointView.element);
-
-      const availableOffers = this.model.getOffersByType(point.type);
-      const selectedOffersIds = point.offers || [];
-      const allDestinations = this.model.getAllDestinations();
-      const editPointView = new EditPointView(
+      const presenter = new PointPresenter({
+        container: listItem,
         point,
         destination,
-        availableOffers,
-        selectedOffersIds,
-        allDestinations
-      );
-
-      const onEscKeyDown = (evt) => {
-        if (evt.key === 'Escape' || evt.key === 'Esc') {
-          evt.preventDefault();
-          replace(pointView, editPointView);
-          document.removeEventListener('keydown', onEscKeyDown);
-        }
-      };
-
-      pointView.setRollupHandler(() => {
-        replace(editPointView, pointView);
-        document.addEventListener('keydown', onEscKeyDown);
+        selectedOfferList,
+        offersByType: this.model.getOffersByType(point.type),
+        allDestinations: this.model.getAllDestinations(),
+        onModeChange: () => this.resetAllPointViews(),
+        onDataChange: (updatedPoint) => this.updatePoint(updatedPoint)
       });
-
-      editPointView.setSubmitHandler(() => {
-        replace(pointView, editPointView);
-        document.removeEventListener('keydown', onEscKeyDown);
-      });
-
-      editPointView.setRollupHandler(() => {
-        replace(pointView, editPointView);
-        document.removeEventListener('keydown', onEscKeyDown);
-      });
+      presenter.init();
+      return presenter;
     });
+  }
+
+  resetAllPointViews() {
+    this.pointPresenters.forEach((p) => p.resetView());
+  }
+
+  updatePoint(updatedPoint) {
+    this.model.updatePoint(updatedPoint);
+    const presenter = this.pointPresenters.find((p) => p.point.id === updatedPoint.id);
+
+    if (!presenter) {
+      return;
+    }
+
+    presenter.point = updatedPoint;
+    presenter.selectedOffers = this.model.getSelectedOffers(updatedPoint);
+    presenter.offersByType = this.model.getOffersByType(updatedPoint.type);
+    presenter.resetView();
+
+    presenter.init();
   }
 
   renderCreateForm() {
