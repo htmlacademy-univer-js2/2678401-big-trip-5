@@ -1,8 +1,8 @@
-import {createElement} from '../render.js';
+import View from './abstract-view.js';
 
-function createPointTemplate() {
-  return (
-    `<li class="trip-events__item">
+export default class PointView extends View {
+  get template() {
+    return `
               <div class="event">
                 <time class="event__date" datetime="2019-03-18">MAR 18</time>
                 <div class="event__type">
@@ -38,24 +38,6 @@ function createPointTemplate() {
                   <span class="visually-hidden">Open event</span>
                 </button>
               </div>
-            </li>`
-  );
-}
-
-export default class PointView {
-  getPoint() {
-    return createPointTemplate();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getPoint());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+    `;
   }
 }
