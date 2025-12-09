@@ -4,6 +4,7 @@ import SortView from '../view/sort.js';
 import EditPointView from '../view/edit-point.js';
 import PointView from '../view/point.js';
 import CreatePointView from '../view/create-point.js';
+import EmptyPointView from '../view/empty-point.js';
 
 export default class BoardPresenter {
   constructor(model) {
@@ -13,13 +14,27 @@ export default class BoardPresenter {
   init() {
     this.renderFilters();
     this.renderSort();
+
+    const pointList = this.model.getPoints();
+    if (pointList.length === 0) {
+      this.renderEmpty();
+      return;
+    }
+
     this.renderPoints();
     this.renderCreateForm();
   }
 
   renderFilters() {
     const tripControlsFilters = document.querySelector('.trip-controls__filters');
-    const filtersView = new FiltersView();
+
+    const pointList = this.model.getPoints();
+    const now = new Date();
+    const hasFuture = pointList.some((p) => new Date(p.dateFrom) > now);
+    const hasPresent = pointList.some((p) => new Date(p.dateFrom) <= now && now <= new Date(p.dateTo));
+    const hasPast = pointList.some((p) => new Date(p.dateTo) < now);
+
+    const filtersView = new FiltersView({hasFuture, hasPresent, hasPast});
     render(filtersView, tripControlsFilters, RenderPosition.BEFOREEND);
   }
 
@@ -92,5 +107,12 @@ export default class BoardPresenter {
     listItem.className = 'trip-events__item';
     listItem.appendChild(createPointView.getElement());
     eventsList.appendChild(listItem);
+  }
+
+  renderEmpty() {
+    const tripEvents = document.querySelector('.trip-events');
+    const h2 = tripEvents.querySelector('h2');
+    const emptyView = new EmptyPointView();
+    render(emptyView, h2, RenderPosition.AFTEREND);
   }
 }
