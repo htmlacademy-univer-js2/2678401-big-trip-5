@@ -1,9 +1,16 @@
 import BoardPresenter from './presenter/board-presenter.js';
-import BoardModel from './domain/model/board-model.js';
 
-const model = new BoardModel();
-const presenter = new BoardPresenter(model);
+const newPointButton = document.querySelector('.trip-main__event-add-btn');
+const boardPresenter = new BoardPresenter();
+
+const handleNewPointClick = (evt) => {
+  evt.preventDefault();
+  boardPresenter.createPoint();
+  newPointButton.disabled = true;
+};
+
+newPointButton.addEventListener('click', handleNewPointClick);
 
 document.addEventListener('DOMContentLoaded', () => {
-  presenter.init();
+  boardPresenter.init();
 });

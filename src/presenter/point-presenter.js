@@ -1,109 +1,128 @@
-import {remove, render, replace} from '../framework/render.js';
+import {render, replace, remove} from '../framework/render.js';
 import PointView from '../view/point.js';
 import EditPointView from '../view/edit-point.js';
-
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING'
-};
+import {MODE, USER_ACTION, UPDATE_TYPE_LIST} from '../util/data.js';
 
 export default class PointPresenter {
-  constructor({
-                container, point, destination,
-                selectedOfferList, offersByType,
-                allDestinations, getOffersByType,
-                onModeChange, onDataChange
-              }) {
-    this.container = container;
-    this.point = point;
-    this.destination = destination;
-    this.selectedOffers = selectedOfferList;
-    this.offersByType = offersByType;
-    this.allDestinations = allDestinations;
-    this.getOffersByType = getOffersByType;
-    this.onModeChange = onModeChange;
-    this.onDataChange = onDataChange;
+  #point = null;
+  #offer = null;
+  #destination = null;
+  #allDestinations = null;
+  #allOffers = null;
+  #mode = MODE.DEFAULT;
 
-    this.mode = Mode.DEFAULT;
+  #pointTask = null;
+  #pointEdit = null;
+  #pointList = null;
 
-    this.pointView = null;
-    this.editPointView = null;
-  }
+  #handleModeChange = null;
+  #handleDataChange = null;
 
-  init() {
-    this.pointView = new PointView(this.point, this.destination, this.selectedOffers);
-    this.editPointView = new EditPointView(
-      this.point,
-      this.destination,
-      this.offersByType,
-      this.point.offers || [],
-      this.allDestinations,
-      this.getOffersByType,
-    );
-
-    this.pointView.setRollupClickHandler(this.#handleOpenEdit);
-    this.pointView.setFavoriteClickHandler(this.#handleFavoriteClick);
-    this.editPointView.setFormSubmitHandler(this.#handleFormSubmit);
-    this.editPointView.setRollupClickHandler(this.#handleCloseEdit);
-
-    render(this.pointView, this.container);
-  }
-
-  resetView() {
-    if (this.mode !== Mode.DEFAULT) {
-      this.#replacePoint();
+  #escKeyHandler = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      this.#pointEdit.reset();
+      this.#replaceEditToTask();
+      document.removeEventListener('keydown', this.#escKeyHandler);
     }
+  };
+
+  constructor(offer, destination, allDestinations,
+              allOffers, pointList,
+              onModeChange, onDataChange) {
+    this.#offer = offer;
+    this.#destination = destination;
+    this.#allDestinations = allDestinations;
+    this.#allOffers = allOffers;
+    this.#pointList = pointList;
+    this.#handleModeChange = onModeChange;
+    this.#handleDataChange = onDataChange;
+  }
+
+  init(point) {
+    this.#point = point;
+    this.#offer = this.#allOffers.find((offer) => offer.type === point.type ? offer : null);
+    this.#destination = this.#allDestinations.find((destination) => destination.name === point.destination ? destination : null);
+
+    const prevPointComponent = this.#pointTask;
+    const prevEditFormComponent = this.#pointEdit;
+
+    this.#pointTask = new PointView({
+      point: this.#point,
+      offer: this.#offer,
+      destination: this.#destination,
+      onEditClick: () => {
+        this.#replaceTaskToEdit();
+        document.addEventListener('keydown', this.#escKeyHandler);
+      },
+      onFavoriteClick: () => {
+        this.#addPointToFavorite();
+      }
+    });
+
+    this.#pointEdit = new EditPointView({
+      point: this.#point,
+      offer: this.#offer,
+      destination: this.#destination,
+      allDestinations: this.#allDestinations,
+      allOffers: this.#allOffers,
+      onRollupClick: () => {
+        this.#pointEdit.reset();
+        this.#replaceEditToTask();
+        document.removeEventListener('keydown', this.#escKeyHandler);
+      },
+      onFormSubmit: (newPoint) => {
+        this.#handleDataChange(USER_ACTION.UPDATE_POINT, UPDATE_TYPE_LIST.PATCH, {...newPoint});
+        this.#replaceEditToTask();
+      },
+      onDeleteClick: (currentPoint) => {
+        this.#handleDataChange(USER_ACTION.DELETE_POINT, UPDATE_TYPE_LIST.MINOR, {...currentPoint});
+      }
+    });
+
+    if (prevPointComponent === null || prevEditFormComponent === null) {
+      render(this.#pointTask, this.#pointList);
+      return;
+    }
+
+    if (this.#mode === MODE.DEFAULT) {
+      replace(this.#pointTask, prevPointComponent);
+    }
+
+    if (this.#mode === MODE.EDITING) {
+      replace(this.#pointEdit, prevEditFormComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevEditFormComponent);
   }
 
   destroy() {
-    if (this.pointView) {
-      remove(this.pointView);
-    }
-
-    if (this.editPointView) {
-      remove(this.editPointView);
-    }
-
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
+    remove(this.#pointTask);
+    remove(this.#pointEdit);
   }
 
-  #replaceEdit() {
-    replace(this.editPointView, this.pointView);
-    this.mode = Mode.EDITING;
-    document.addEventListener('keydown', this.#escKeyDownHandler);
-  }
-
-  #replacePoint() {
-    replace(this.pointView, this.editPointView);
-    this.mode = Mode.DEFAULT;
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
-  }
-
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      this.#replacePoint();
+  resetView() {
+    if (this.#mode !== MODE.DEFAULT) {
+      this.#replaceEditToTask();
     }
-  };
+  }
 
-  #handleOpenEdit = () => {
-    this.onModeChange?.();
-    this.#replaceEdit();
-  };
+  #replaceTaskToEdit() {
+    replace(this.#pointEdit, this.#pointTask);
+    this.#handleModeChange();
+    this.#mode = MODE.EDITING;
+  }
 
-  #handleCloseEdit = () => {
-    this.#replacePoint();
-  };
+  #replaceEditToTask() {
+    replace(this.#pointTask, this.#pointEdit);
+    this.#mode = MODE.DEFAULT;
+  }
 
-  #handleFormSubmit = () => {
-    this.#replacePoint();
-  };
-
-  #handleFavoriteClick = () => {
-    const updatedPoint = {
-      ...this.point,
-      isFavorite: !this.point.isFavorite
-    };
-    this.onDataChange?.(updatedPoint);
+  #addPointToFavorite = () => {
+    this.#handleDataChange(USER_ACTION.UPDATE_POINT, UPDATE_TYPE_LIST.PATCH, {
+      ...this.#point,
+      isFavorite: !this.#point.isFavorite
+    });
   };
 }

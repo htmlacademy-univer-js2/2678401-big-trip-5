@@ -1,12 +1,55 @@
-export default class Point {
-  constructor(data) {
-    this.id = data.id;
-    this.basePrice = data.basePrice;
-    this.dateFrom = data.dateFrom;
-    this.dateTo = data.dateTo;
-    this.destination = data.destination;
-    this.isFavorite = data.isFavorite;
-    this.offers = data.offers;
-    this.type = data.type;
+import Observable from '/src/framework/observable.js';
+import {pointList} from './mock/mock-point.js';
+
+export default class PointModel extends Observable {
+  #points = null;
+
+  constructor() {
+    super();
+    this.#points = [...pointList];
+  }
+
+  getPoints() {
+    return this.#points;
+  }
+
+  updatePoint(updateType, update) {
+    const index = this.#points.findIndex((point) => point.id === update.id);
+
+    if (index === -1) {
+      throw new Error('Cant update unexisting Point');
+    }
+
+    this.#points = [
+      ...this.#points.slice(0, index),
+      update,
+      ...this.#points.slice(index + 1),
+    ];
+
+    this._notify(updateType, update);
+  }
+
+  addPoint(updateType, update) {
+    this.#points = [
+      update,
+      ...this.#points,
+    ];
+
+    this._notify(updateType, update);
+  }
+
+  deletePoint(updateType, update) {
+    const index = this.#points.findIndex((point) => point.id === update.id);
+
+    if (index === -1) {
+      throw new Error('Cant update unexisting Point');
+    }
+
+    this.#points = [
+      ...this.#points.slice(0, index),
+      ...this.#points.slice(index + 1),
+    ];
+
+    this._notify(updateType, update);
   }
 }
