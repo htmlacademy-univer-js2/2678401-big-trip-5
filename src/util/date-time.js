@@ -3,22 +3,22 @@ const MONTH_LIST = [
   'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
 ];
 
-const parseFormatDate = (dateString) => {
-  const date = new Date(dateString);
+export const parseFormatDate = (str) => {
+  const date = new Date(str);
   const day = date.getDate();
   const month = MONTH_LIST[date.getMonth()];
   return `${month} ${day}`;
 };
 
-const parseFormatTime = (dateString) => {
-  const date = new Date(dateString);
+export const parseFormatTime = (str) => {
+  const date = new Date(str);
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
   return `${hours}:${minutes}`;
 };
 
-const parseFormatDateForInput = (dateString) => {
-  const date = new Date(dateString);
+export const parseFormatDateInput = (str) => {
+  const date = new Date(str);
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = String(date.getFullYear()).slice(-2);
@@ -27,8 +27,7 @@ const parseFormatDateForInput = (dateString) => {
   return `${day}/${month}/${year} ${hours}:${minutes}`;
 };
 
-
-const calculateDuration = (dateFrom, dateTo) => {
+export const calculateDuration = (dateFrom, dateTo) => {
   const from = new Date(dateFrom);
   const to = new Date(dateTo);
   const diffMs = to - from;
@@ -47,5 +46,3 @@ const calculateDuration = (dateFrom, dateTo) => {
 
   return `${hours}H ${minutes}M`;
 };
-
-export {parseFormatDate, parseFormatTime, calculateDuration, parseFormatDateForInput};

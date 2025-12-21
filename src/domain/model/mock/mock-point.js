@@ -1,6 +1,6 @@
-import PointView from '../point.js';
+import Point from '../point.js';
 
-const POINT_TYPE_LIST = [
+export const POINT_TYPE_LIST = [
   'taxi',
   'bus',
   'train',
@@ -12,7 +12,7 @@ const POINT_TYPE_LIST = [
   'restaurant'
 ];
 
-const generatePoint = (overrides = {}) => {
+export const generatePoint = (overrides = {}) => {
   const defaultPoint = {
     id: crypto.randomUUID(),
     basePrice: 100,
@@ -25,7 +25,5 @@ const generatePoint = (overrides = {}) => {
     ...overrides
   };
 
-  return new PointView(defaultPoint);
+  return new Point(defaultPoint);
 };
-
-export {generatePoint, POINT_TYPE_LIST};

@@ -1,25 +1,27 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {parseFormatDateForInput} from '../util/date-time.js';
+import {parseFormatDateInput} from '../util/date-time.js';
 import {POINT_TYPE_LIST} from '../domain/model/mock/mock-point.js';
 
 export default class EditPointView extends AbstractView {
-  constructor(point = null, destination = null, availableOffers = [], selectedOffersIds = [], allDestinations = []) {
+  constructor(point = null, destination = null,
+              availableOfferList = [], selectedOffersIds = [],
+              allDestinationList = []) {
     super();
     this.point = point;
     this.destination = destination;
-    this.availableOffers = availableOffers;
+    this.availableOffers = availableOfferList;
     this.selectedOffersIds = selectedOffersIds;
-    this.allDestinations = allDestinations;
+    this.allDestinations = allDestinationList;
   }
 
   get template() {
     const pointType = this.point?.type || 'flight';
     const destinationName = this.destination?.name || '';
-    const startTime = this.point ? parseFormatDateForInput(this.point.dateFrom) : '';
-    const endTime = this.point ? parseFormatDateForInput(this.point.dateTo) : '';
+    const startTime = this.point ? parseFormatDateInput(this.point.dateFrom) : '';
+    const endTime = this.point ? parseFormatDateInput(this.point.dateTo) : '';
     const price = this.point?.basePrice || '';
     const description = this.destination?.description || '';
-    const pictures = this.destination?.pictures || [];
+    const pictureList = this.destination?.pictures || [];
 
     const typeOptionsHTML = POINT_TYPE_LIST.map((type) => {
       const checked = type === pointType ? 'checked' : '';
@@ -65,10 +67,10 @@ export default class EditPointView extends AbstractView {
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${description}</p>
-        ${pictures.length > 0 ? `
+        ${pictureList.length > 0 ? `
           <div class="event__photos-container">
             <div class="event__photos-tape">
-              ${pictures.map((picture) => `
+              ${pictureList.map((picture) => `
                 <img class="event__photo" src="${picture.src}" alt="${picture.description}">
               `).join('')}
             </div>
@@ -141,14 +143,14 @@ export default class EditPointView extends AbstractView {
     `;
   }
 
-  setSubmitHandler(handler) {
+  setFormSubmitHandler(handler) {
     this.element.addEventListener('submit', (evt) => {
       evt.preventDefault();
       handler();
     });
   }
 
-  setRollupHandler(handler) {
+  setRollupClickHandler(handler) {
     const btn = this.element.querySelector('.event__rollup-btn');
     if (btn) {
       btn.addEventListener('click', handler);
