@@ -1,8 +1,11 @@
-export default class Destination {
-  constructor(data) {
-    this.id = data.id;
-    this.description = data.description;
-    this.name = data.name;
-    this.pictures = data.pictures;
+import { destinationsElementsMock } from './mock/mock-destination.js';
+
+export default class DestinationsModel {
+  constructor() {
+    this.destinations = [...destinationsElementsMock];
+  }
+
+  getDestinations() {
+    return this.destinations;
   }
 }

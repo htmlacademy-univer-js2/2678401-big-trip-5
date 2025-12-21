@@ -1,7 +1,11 @@
-export default class Offer {
-  constructor(data) {
-    this.id = data.id;
-    this.title = data.title;
-    this.price = data.price;
+import {offersElementsMock} from './mock/mock-offer.js';
+
+export default class OffersModel {
+  constructor() {
+    this.offers = [...offersElementsMock];
+  }
+
+  getOffers() {
+    return this.offers;
   }
 }
