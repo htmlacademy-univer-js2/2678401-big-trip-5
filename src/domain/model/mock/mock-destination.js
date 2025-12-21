@@ -1,6 +1,6 @@
 import Destination from '../destination.js';
 
-const generateDestination = (overrides = {}) => {
+export const generateDestination = (overrides = {}) => {
   const defaultDestination = {
     id: 'chamonix',
     description: 'Chamonix-Mont-Blanc (usually shortened to Chamonix) is a resort area near the junction of France, Switzerland and Italy. At the base of Mont Blanc, the highest summit in the Alps, it\'s renowned for its skiing.',
@@ -32,6 +32,3 @@ const generateDestination = (overrides = {}) => {
 
   return new Destination(defaultDestination);
 };
-
-export {generateDestination};
-

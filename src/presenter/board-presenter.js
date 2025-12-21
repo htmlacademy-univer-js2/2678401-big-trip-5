@@ -1,4 +1,4 @@
-import {render, RenderPosition} from '../framework/render';
+import {render, RenderPosition} from '../framework/render.js';
 import FiltersView from '../view/filters.js';
 import SortView, {SortType} from '../view/sort.js';
 import CreatePointView from '../view/create-point.js';
@@ -51,7 +51,6 @@ export default class BoardPresenter {
     const tripEventsList = document.querySelector('.trip-events__list');
     const pointsToRender = this.getSortedPoints();
 
-
     this.pointPresenters = pointsToRender.map((point) => {
       const destination = this.model.getDestinationById(point.destination);
       const selectedOfferList = this.model.getSelectedOffers(point);
@@ -67,6 +66,7 @@ export default class BoardPresenter {
         selectedOfferList,
         offersByType: this.model.getOffersByType(point.type),
         allDestinations: this.model.getAllDestinations(),
+        getOffersByType: (type) => this.model.getOffersByType(type),
         onModeChange: () => this.resetAllPointViews(),
         onDataChange: (updatedPoint) => this.updatePoint(updatedPoint)
       });
@@ -105,17 +105,17 @@ export default class BoardPresenter {
   }
 
   getSortedPoints() {
-    const points = this.model.getPoints().slice(0, 3);
+    const pointList = this.model.getPoints().slice(0, 3);
 
     if (this.currentSortType === SortType.TIME) {
-      return points.sort((a, b) => (new Date(b.dateTo) - new Date(b.dateFrom)) - (new Date(a.dateTo) - new Date(a.dateFrom)));
+      return pointList.sort((a, b) => (new Date(b.dateTo) - new Date(b.dateFrom)) - (new Date(a.dateTo) - new Date(a.dateFrom)));
     }
 
     if (this.currentSortType === SortType.PRICE) {
-      return points.sort((a, b) => b.basePrice - a.basePrice);
+      return pointList.sort((a, b) => b.basePrice - a.basePrice);
     }
 
-    return points.sort((a, b) => new Date(a.dateFrom) - new Date(b.dateFrom));
+    return pointList.sort((a, b) => new Date(a.dateFrom) - new Date(b.dateFrom));
   }
 
   clearPoints() {

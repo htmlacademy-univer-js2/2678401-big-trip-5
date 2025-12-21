@@ -67,7 +67,7 @@ export default class PointView extends AbstractView {
     `;
   }
 
-  setRollupHandler(handler) {
+  setRollupClickHandler(handler) {
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', handler);
   }

@@ -1,4 +1,4 @@
-import {render, replace, remove} from '../framework/render.js';
+import {remove, render, replace} from '../framework/render.js';
 import PointView from '../view/point.js';
 import EditPointView from '../view/edit-point.js';
 
@@ -9,21 +9,18 @@ const Mode = {
 
 export default class PointPresenter {
   constructor({
-                container,
-                point,
-                destination,
-                selectedOffers,
-                offersByType,
-                allDestinations,
-                onModeChange,
-                onDataChange
+                container, point, destination,
+                selectedOfferList, offersByType,
+                allDestinations, getOffersByType,
+                onModeChange, onDataChange
               }) {
     this.container = container;
     this.point = point;
     this.destination = destination;
-    this.selectedOffers = selectedOffers;
+    this.selectedOffers = selectedOfferList;
     this.offersByType = offersByType;
     this.allDestinations = allDestinations;
+    this.getOffersByType = getOffersByType;
     this.onModeChange = onModeChange;
     this.onDataChange = onDataChange;
 
@@ -40,13 +37,14 @@ export default class PointPresenter {
       this.destination,
       this.offersByType,
       this.point.offers || [],
-      this.allDestinations
+      this.allDestinations,
+      this.getOffersByType,
     );
 
-    this.pointView.setRollupHandler(this.#handleOpenEdit);
+    this.pointView.setRollupClickHandler(this.#handleOpenEdit);
     this.pointView.setFavoriteClickHandler(this.#handleFavoriteClick);
-    this.editPointView.setSubmitHandler(this.#handleFormSubmit);
-    this.editPointView.setRollupHandler(this.#handleCloseEdit);
+    this.editPointView.setFormSubmitHandler(this.#handleFormSubmit);
+    this.editPointView.setRollupClickHandler(this.#handleCloseEdit);
 
     render(this.pointView, this.container);
   }

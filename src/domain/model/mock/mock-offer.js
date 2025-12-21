@@ -1,6 +1,6 @@
 import Offer from '../offer.js';
 
-const generateOffer = (overrides = {}) => {
+export const generateOffer = (overrides = {}) => {
   const defaultOffer = {
     id: crypto.randomUUID(),
     title: 'Add luggage',
@@ -10,5 +10,3 @@ const generateOffer = (overrides = {}) => {
 
   return new Offer(defaultOffer);
 };
-
-export {generateOffer};

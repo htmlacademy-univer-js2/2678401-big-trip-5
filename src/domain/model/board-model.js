@@ -1,4 +1,4 @@
-import {POINT_LIST, DESTINATION_LIST, OFFERS_BY_TYPE} from './mock/mock-data';
+import {POINT_LIST, DESTINATION_LIST, OFFERS_BY_TYPE} from './mock/mock-data.js';
 
 export default class BoardModel {
   constructor() {
