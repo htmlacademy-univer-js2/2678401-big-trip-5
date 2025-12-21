@@ -29,6 +29,10 @@
     "css-loader": "6.8.1",
     "style-loader": "3.3.3"
   },
+  "dependencies": {
+    "dayjs": "1.11.7",
+    "flatpickr": "4.6.13"
+  },
   "engines": {
     "node": "20"
   }
