@@ -1,6 +1,8 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {parseFormatDateInput} from '../util/date-time.js';
 import {POINT_TYPE_LIST} from '../domain/model/mock/mock-point.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 export default class EditPointView extends AbstractStatefulView {
   constructor(point = null, destination = null,
@@ -172,6 +174,7 @@ export default class EditPointView extends AbstractStatefulView {
     if (this._callbacks.onRollup) {
       this.setRollupClickHandler(this._callbacks.onRollup);
     }
+    this.#initDatePickers();
   }
 
   #setInnerHandlers() {
@@ -216,6 +219,53 @@ export default class EditPointView extends AbstractStatefulView {
           this._setState({selectedOffersIds: Array.from(currentOfferId)});
         }
       });
+    }
+  }
+
+  #initDatePickers() {
+    this.#destroyDatePickers();
+    const fromInput = this.element.querySelector('#event-start-time-1');
+    const toInput = this.element.querySelector('#event-end-time-1');
+    const options = {
+      enableTime: true,
+      time_24hr: true,
+      dateFormat: 'd/m/y H:i',
+      defaultDate: this._state.point ? this._state.point.dateFrom : null
+    };
+    if (fromInput) {
+      this._fromPicker = flatpickr(fromInput, {
+        ...options,
+        defaultDate: this._state.point ? this._state.point.dateFrom : null,
+        onChange: (selectedDates) => {
+          if (selectedDates[0] && this._state.point) {
+            const updated = {...this._state.point, dateFrom: selectedDates[0].toISOString()};
+            this._setState({point: updated});
+          }
+        }
+      });
+    }
+    if (toInput) {
+      this._toPicker = flatpickr(toInput, {
+        ...options,
+        defaultDate: this._state.point ? this._state.point.dateTo : null,
+        onChange: (selectedDates) => {
+          if (selectedDates[0] && this._state.point) {
+            const updated = {...this._state.point, dateTo: selectedDates[0].toISOString()};
+            this._setState({point: updated});
+          }
+        }
+      });
+    }
+  }
+
+  #destroyDatePickers() {
+    if (this._fromPicker) {
+      this._fromPicker.destroy();
+      this._fromPicker = null;
+    }
+    if (this._toPicker) {
+      this._toPicker.destroy();
+      this._toPicker = null;
     }
   }
 }
