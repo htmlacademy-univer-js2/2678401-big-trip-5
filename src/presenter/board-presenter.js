@@ -65,7 +65,8 @@ export default class BoardPresenter {
         destination,
         selectedOfferList,
         offersByType: this.model.getOffersByType(point.type),
-        allDestinationList: this.model.getAllDestinations(),
+        allDestinations: this.model.getAllDestinations(),
+        getOffersByType: (type) => this.model.getOffersByType(type),
         onModeChange: () => this.resetAllPointViews(),
         onDataChange: (updatedPoint) => this.updatePoint(updatedPoint)
       });

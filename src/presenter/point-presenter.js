@@ -11,15 +11,16 @@ export default class PointPresenter {
   constructor({
                 container, point, destination,
                 selectedOfferList, offersByType,
-                allDestinationList, onModeChange,
-                onDataChange
+                allDestinations, getOffersByType,
+                onModeChange, onDataChange
               }) {
     this.container = container;
     this.point = point;
     this.destination = destination;
     this.selectedOffers = selectedOfferList;
     this.offersByType = offersByType;
-    this.allDestinations = allDestinationList;
+    this.allDestinations = allDestinations;
+    this.getOffersByType = getOffersByType;
     this.onModeChange = onModeChange;
     this.onDataChange = onDataChange;
 
@@ -36,7 +37,8 @@ export default class PointPresenter {
       this.destination,
       this.offersByType,
       this.point.offers || [],
-      this.allDestinations
+      this.allDestinations,
+      this.getOffersByType,
     );
 
     this.pointView.setRollupClickHandler(this.#handleOpenEdit);
