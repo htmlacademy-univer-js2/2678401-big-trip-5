@@ -32,13 +32,17 @@ export function parseFormatDuration(dateFrom, dateTo) {
 }
 
 export function isPointPresent(point) {
-  return dayjs().isAfter(dayjs(point.dateFrom)) && dayjs().isBefore(dayjs(point.dateTo));
+  const now = dayjs();
+  const start = dayjs(point.dateFrom);
+  const end = dayjs(point.dateTo);
+  return (now.isAfter(start) || now.isSame(start)) &&
+    (now.isBefore(end) || now.isSame(end));
 }
 
 export function isPointFuture(point) {
-  return dayjs().isBefore(dayjs(point.dateTo));
+  return dayjs().isBefore(dayjs(point.dateFrom));
 }
 
 export function isPointPast(point) {
-  return dayjs().isAfter(dayjs(point.dateFrom));
+  return dayjs().isAfter(dayjs(point.dateTo));
 }

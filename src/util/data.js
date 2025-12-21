@@ -43,3 +43,15 @@ export const SORT_TYPE_LIST = [
 ];
 
 export const CITY_LIST = ['Paris', 'Amsterdam', 'Barcelona', 'Dublin', 'Vienna'];
+
+export const UPDATE_TYPE_LIST = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export const USER_ACTION = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};

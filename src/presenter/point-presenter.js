@@ -1,7 +1,7 @@
 import {render, replace, remove} from '../framework/render.js';
 import PointView from '../view/point.js';
 import EditPointView from '../view/edit-point.js';
-import {MODE} from '../util/data.js';
+import {MODE, USER_ACTION, UPDATE_TYPE_LIST} from '../util/data.js';
 
 export default class PointPresenter {
   #point = null;
@@ -72,8 +72,11 @@ export default class PointPresenter {
         document.removeEventListener('keydown', this.#escKeyHandler);
       },
       onFormSubmit: (newPoint) => {
-        this.#handleDataChange({...newPoint});
+        this.#handleDataChange(USER_ACTION.UPDATE_POINT, UPDATE_TYPE_LIST.PATCH, {...newPoint});
         this.#replaceEditToTask();
+      },
+      onDeleteClick: (currentPoint) => {
+        this.#handleDataChange(USER_ACTION.DELETE_POINT, UPDATE_TYPE_LIST.MINOR, {...currentPoint});
       }
     });
 
@@ -117,6 +120,9 @@ export default class PointPresenter {
   }
 
   #addPointToFavorite = () => {
-    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#handleDataChange(USER_ACTION.UPDATE_POINT, UPDATE_TYPE_LIST.PATCH, {
+      ...this.#point,
+      isFavorite: !this.#point.isFavorite
+    });
   };
 }

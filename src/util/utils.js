@@ -30,10 +30,6 @@ export const getDestinationFromId = (idNumber, destinationElements) => {
   return destinationName;
 };
 
-export function updatePointData(points, updatedPoint) {
-  return points.map((point) => point.id === updatedPoint.id ? updatedPoint : point);
-}
-
 export function sortByDay(pointFirst, pointSecond) {
   return new Date(pointFirst.dateFrom) - new Date(pointSecond.dateFrom);
 }

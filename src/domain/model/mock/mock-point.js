@@ -12,8 +12,8 @@ export const pointList = [
   {
     'id': '1',
     'basePrice': getRandomValue(MIN_PRICE, MAX_PRICE),
-    'dateFrom': '2025-03-28T22:55:56.845Z',
-    'dateTo': '2025-03-29T22:56:01.234Z',
+    'dateFrom': '2025-11-25T21:00:00.000Z',
+    'dateTo': '2025-11-26T22:00:00.000Z',
     'destination': getDestinationFromId('1', destinationList),
     'isFavorite': Boolean(getRandomValue(FALSE_NUMBER, TRUE_NUMBER)),
     'offers': getOffersFromTypes(EVENT_TYPE_LIST[0], offerList),
@@ -22,8 +22,8 @@ export const pointList = [
   {
     'id': '2',
     'basePrice': getRandomValue(MIN_PRICE, MAX_PRICE),
-    'dateFrom': '2025-03-30T00:10:30.555Z',
-    'dateTo': '2025-03-30T08:00:00.123Z',
+    'dateFrom': '2025-11-26T21:00:00.000Z',
+    'dateTo': '2025-11-27T22:00:00.000Z',
     'destination': getDestinationFromId('2', destinationList),
     'isFavorite': Boolean(getRandomValue(FALSE_NUMBER, TRUE_NUMBER)),
     'offers': getOffersFromTypes(EVENT_TYPE_LIST[1], offerList),
@@ -32,8 +32,8 @@ export const pointList = [
   {
     'id': '3',
     'basePrice': getRandomValue(MIN_PRICE, MAX_PRICE),
-    'dateFrom': '2025-03-31T12:34:56.789Z',
-    'dateTo': '2025-04-01T00:00:00.001Z',
+    'dateFrom': '2025-11-27T21:00:00.000Z',
+    'dateTo': '2025-11-28T22:00:00.000Z',
     'destination': getDestinationFromId('3', destinationList),
     'isFavorite': Boolean(getRandomValue(FALSE_NUMBER, TRUE_NUMBER)),
     'offers': getOffersFromTypes(EVENT_TYPE_LIST[2], offerList),
@@ -42,8 +42,8 @@ export const pointList = [
   {
     'id': '4',
     'basePrice': getRandomValue(MIN_PRICE, MAX_PRICE),
-    'dateFrom': '2025-04-05T18:22:44.666Z',
-    'dateTo': '2025-05-10T05:05:05.505Z',
+    'dateFrom': '2025-11-28T21:00:00.000Z',
+    'dateTo': '2025-11-29T22:00:00.000Z',
     'destination': getDestinationFromId('4', destinationList),
     'isFavorite': Boolean(getRandomValue(FALSE_NUMBER, TRUE_NUMBER)),
     'offers': getOffersFromTypes(EVENT_TYPE_LIST[3], offerList),

@@ -1,11 +1,11 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-function createFilterPointTemplate(filterItems) {
+function createFilterViewTemplate(filterItems) {
 
   const filterList = filterItems
     .map((filter) => {
       const type = filter.type;
-      const count = filter.count;
+      const count = filter.points.length;
 
       return `<div class="trip-filters__filter">
                   <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio"
@@ -21,15 +21,25 @@ function createFilterPointTemplate(filterItems) {
               </form>`;
 }
 
-export default class Filters extends AbstractView {
+export default class FilterView extends AbstractView {
   #filters = null;
+  #filterTypeHandler = null;
+  #filterTypeHandlerInput = null;
 
-  constructor(filters) {
+  constructor({filters, onFilterTypeChange}) {
     super();
     this.#filters = filters;
+    this.#filterTypeHandler = onFilterTypeChange;
+
+    this.element.querySelectorAll('.trip-filters__filter-input').forEach((element) => {
+      element.addEventListener('input', this.#filterTypeHandlerInput = (evt) => {
+        evt.preventDefault();
+        this.#filterTypeHandler(element.value);
+      });
+    });
   }
 
   get template() {
-    return createFilterPointTemplate(this.#filters);
+    return createFilterViewTemplate(this.#filters);
   }
 }
