@@ -1,10 +1,10 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {TIME_FORMATS, EVENT_TYPES} from '../util/data.js';
-import {formatDate} from '../util/utils.js';
+import {TIME_FORMAT_LIST, EVENT_TYPE_LIST} from '../util/data.js';
+import {parseFormatDate} from '../util/date-time.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-function createFormEditingTemplate(point) {
+function createPointEditingTemplate(point) {
   const {
     dateFrom: dateFrom,
     dateTo: dateTo,
@@ -15,7 +15,7 @@ function createFormEditingTemplate(point) {
     description: description
   } = point;
 
-  const eventTypes = EVENT_TYPES
+  const eventTypes = EVENT_TYPE_LIST
     .map((event) =>
       `<div class="event__type-item">
         <input id="event-type-${event}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${event}"
@@ -76,10 +76,10 @@ function createFormEditingTemplate(point) {
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(dateFrom, TIME_FORMATS['FULL_DATE'])}">
+                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${parseFormatDate(dateFrom, TIME_FORMAT_LIST['FULL_DATE'])}">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(dateTo, TIME_FORMATS['FULL_DATE'])}">
+                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${parseFormatDate(dateTo, TIME_FORMAT_LIST['FULL_DATE'])}">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -114,7 +114,7 @@ function createFormEditingTemplate(point) {
             </li>`;
 }
 
-export default class FromEditing extends AbstractStatefulView {
+export default class EditPointView extends AbstractStatefulView {
   #point = null;
   #offer = null;
   #destination = null;
@@ -132,7 +132,7 @@ export default class FromEditing extends AbstractStatefulView {
     this.#destination = destination;
     this.#allDestinations = allDestinations;
     this.#allOffers = allOffers;
-    this._setState(FromEditing.parsePointToState(this.#point, this.#offer, this.#destination));
+    this._setState(EditPointView.parsePointToState(this.#point, this.#offer, this.#destination));
     this.#rollupHandler = onRollupClick;
     this.#formHandler = onFormSubmit;
 
@@ -140,11 +140,11 @@ export default class FromEditing extends AbstractStatefulView {
   }
 
   get template() {
-    return createFormEditingTemplate(this._state);
+    return createPointEditingTemplate(this._state);
   }
 
   reset() {
-    this.updateElement(FromEditing.parseStateToPoint({
+    this.updateElement(EditPointView.parseStateToPoint({
       ...this.#point,
       type: this.#offer.type,
       offers: this.#offer.offers,
@@ -234,7 +234,7 @@ export default class FromEditing extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#formHandler(FromEditing.parseStateToPoint(this._state));
+    this.#formHandler(EditPointView.parseStateToPoint(this._state));
   };
 
   #rollupHandlerClick = (evt) => {

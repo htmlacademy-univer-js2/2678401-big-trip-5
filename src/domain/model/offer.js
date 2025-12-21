@@ -1,8 +1,8 @@
-import {offersElementsMock} from './mock/mock-offer.js';
+import {offerList} from './mock/mock-offer.js';
 
-export default class OffersModel {
+export default class OfferModel {
   constructor() {
-    this.offers = [...offersElementsMock];
+    this.offers = [...offerList];
   }
 
   getOffers() {

@@ -1,12 +1,12 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {SORT_TYPES} from '../util/data.js';
+import {SORT_TYPE_LIST} from '../util/data.js';
 
-function createSortingTemplate(sortType) {
-  const sortList = SORT_TYPES.map((type) =>
+function createSortPointViewTemplate(sortType) {
+  const sortList = SORT_TYPE_LIST.map((type) =>
     `<div class="trip-sort__item  trip-sort__item--${type}">
               <input id="sort-${type}" class="trip-sort__input  visually-hidden" data-sort-type=${type}
               type="radio" name="trip-sort" value="sort-${type}" ${type === sortType ? 'checked' : ''}
-              ${type === SORT_TYPES[1] || type === SORT_TYPES[4] ? 'disabled' : ''}>
+              ${type === SORT_TYPE_LIST[1] || type === SORT_TYPE_LIST[4] ? 'disabled' : ''}>
               <label class="trip-sort__btn" for="sort-${type}">${type}</label>
             </div>`
   ).join('\n');
@@ -16,7 +16,7 @@ function createSortingTemplate(sortType) {
           </form>`;
 }
 
-export default class Sorting extends AbstractView {
+export default class SortPointView extends AbstractView {
   #sortType = null;
 
   #onSortTypeChange = null;
@@ -35,6 +35,6 @@ export default class Sorting extends AbstractView {
   };
 
   get template() {
-    return createSortingTemplate(this.#sortType);
+    return createSortPointViewTemplate(this.#sortType);
   }
 }

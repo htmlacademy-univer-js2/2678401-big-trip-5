@@ -1,35 +1,26 @@
 import dayjs from 'dayjs';
-import {TIME_SUFFIXES} from './data.js';
 
-export const getRandomArrayElement = (array) => {
-  const randomElement = Math.floor(Math.random() * array.length);
+export const getRandomValue = (minPrice, maxPrice) => Math.round(Math.random() * (maxPrice - minPrice) + minPrice);
 
-  return array[randomElement];
-};
+export const getOffersFromTypes = (eventType, offerElements) => {
+  let offerList = [];
 
-export const getRandomValue = (minPrice, maxPrice) => {
-  return Math.round(Math.random() * (maxPrice - minPrice) + minPrice);
-};
-
-export const getOffersFromTypes = (eventType, offersElementsArray) => {
-  let offersArray = [];
-
-  offersElementsArray.forEach((offersElement) => {
+  offerElements.forEach((offersElement) => {
     const {type, offers} = offersElement;
 
     if (type === eventType) {
-      offersArray = offers;
+      offerList = offers;
     }
   });
 
-  return offersArray;
+  return offerList;
 };
 
-export const getDestinationFromId = (idNumber, destinationsElementsArray) => {
+export const getDestinationFromId = (idNumber, destinationElements) => {
   let destinationName = '';
 
-  destinationsElementsArray.forEach((destinationsElement) => {
-    const {id, name} = destinationsElement;
+  destinationElements.forEach((destinations) => {
+    const {id, name} = destinations;
 
     if (id === idNumber) {
       destinationName = name;
@@ -39,62 +30,19 @@ export const getDestinationFromId = (idNumber, destinationsElementsArray) => {
   return destinationName;
 };
 
-
-export function formatDate(date, format) {
-  return dayjs(date).format(format);
+export function updatePointData(points, updatedPoint) {
+  return points.map((point) => point.id === updatedPoint.id ? updatedPoint : point);
 }
 
-export function formatDuration(dateFrom, dateTo) {
-  const startTime = dayjs(dateFrom);
-  const endTime = dayjs(dateTo);
-  const durationAllMinutes = endTime.diff(startTime, 'minute');
-
-  const durationDays = Math.floor(durationAllMinutes / 1440);
-  const remainingMinutes = durationAllMinutes % 1440;
-  const durationHours = Math.floor(remainingMinutes / 60);
-  const durationsMinutes = remainingMinutes % 60 + 1;
-
-  const durationElements = [durationDays, durationHours, durationsMinutes];
-  const durationResult = [];
-
-  for (let i = 0; i < durationElements.length; i++) {
-    const value = durationElements[i];
-    if (value > 0) {
-      const suffix = TIME_SUFFIXES[i];
-      const paddedValue = value < 10 ? `0${value}` : value;
-      durationResult.push(`${paddedValue}${suffix}`);
-    }
-
-  }
-
-  return durationResult.join(' ') || '00M';
+export function sortByDay(pointFirst, pointSecond) {
+  return new Date(pointFirst.dateFrom) - new Date(pointSecond.dateFrom);
 }
 
-export function isPointPresent(point) {
-  return dayjs().isAfter(dayjs(point.dateFrom)) && dayjs().isBefore(dayjs(point.dateTo));
+export function sortByPrice(pointFirst, pointSecond) {
+  return pointSecond.basePrice - pointFirst.basePrice;
 }
 
-export function isPointFuture(point) {
-  return dayjs().isBefore(dayjs(point.dateTo));
-}
-
-export function isPointPast(point) {
-  return dayjs().isAfter(dayjs(point.dateFrom));
-}
-
-export function updatePointData(points, updatedPointData) {
-  return points.map((point) => point.id === updatedPointData.id ? updatedPointData : point);
-}
-
-export function sortByDay(pointA, pointB) {
-  return new Date(pointA.dateFrom) - new Date(pointB.dateFrom);
-}
-
-export function sortByPrice(pointA, pointB) {
-  return pointB.basePrice - pointA.basePrice;
-}
-
-export function sortByDuration(pointA, pointB) {
-  return dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom)) -
-    dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom));
+export function sortByDuration(pointFirst, pointSecond) {
+  return dayjs(pointSecond.dateTo).diff(dayjs(pointSecond.dateFrom)) -
+    dayjs(pointFirst.dateTo).diff(dayjs(pointFirst.dateFrom));
 }

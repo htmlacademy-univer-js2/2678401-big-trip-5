@@ -1,9 +1,9 @@
 import {render, replace, remove} from '../framework/render.js';
-import RoutePointElement from '../view/point.js';
-import FromEditing from '../view/edit-point.js';
+import PointView from '../view/point.js';
+import EditPointView from '../view/edit-point.js';
 import {MODE} from '../util/data.js';
 
-export default class TaskPresenter {
+export default class PointPresenter {
   #point = null;
   #offer = null;
   #destination = null;
@@ -13,7 +13,7 @@ export default class TaskPresenter {
 
   #pointTask = null;
   #pointEdit = null;
-  #pointsListComponent = null;
+  #pointList = null;
 
   #handleModeChange = null;
   #handleDataChange = null;
@@ -28,13 +28,13 @@ export default class TaskPresenter {
   };
 
   constructor(offer, destination, allDestinations,
-              allOffers, pointsListComponent,
+              allOffers, pointList,
               onModeChange, onDataChange) {
     this.#offer = offer;
     this.#destination = destination;
     this.#allDestinations = allDestinations;
     this.#allOffers = allOffers;
-    this.#pointsListComponent = pointsListComponent;
+    this.#pointList = pointList;
     this.#handleModeChange = onModeChange;
     this.#handleDataChange = onDataChange;
   }
@@ -47,7 +47,7 @@ export default class TaskPresenter {
     const prevPointComponent = this.#pointTask;
     const prevEditFormComponent = this.#pointEdit;
 
-    this.#pointTask = new RoutePointElement({
+    this.#pointTask = new PointView({
       point: this.#point,
       offer: this.#offer,
       destination: this.#destination,
@@ -60,7 +60,7 @@ export default class TaskPresenter {
       }
     });
 
-    this.#pointEdit = new FromEditing({
+    this.#pointEdit = new EditPointView({
       point: this.#point,
       offer: this.#offer,
       destination: this.#destination,
@@ -78,7 +78,7 @@ export default class TaskPresenter {
     });
 
     if (prevPointComponent === null || prevEditFormComponent === null) {
-      render(this.#pointTask, this.#pointsListComponent);
+      render(this.#pointTask, this.#pointList);
       return;
     }
 

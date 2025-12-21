@@ -1,11 +1,11 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-function createRoutePointListTemplate() {
+function createListPointViewTemplate() {
   return '<ul class="trip-events__list"></ul>';
 }
 
-export default class RoutePointList extends AbstractView {
+export default class ListPointView extends AbstractView {
   get template() {
-    return createRoutePointListTemplate();
+    return createListPointViewTemplate();
   }
 }

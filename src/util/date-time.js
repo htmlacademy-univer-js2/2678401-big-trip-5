@@ -1,46 +1,44 @@
 import dayjs from 'dayjs';
+import {TIME_SUFFIXES_LIST} from './data.js';
 
-export const parseFormatDate = (str) => {
-  if (!str) {
-    return '';
-  }
-  return dayjs(str).format('MMM D').toUpperCase();
-};
+export function parseFormatDate(date, format) {
+  return dayjs(date).format(format);
+}
 
-export const parseFormatTime = (str) => {
-  if (!str) {
-    return '';
-  }
-  return dayjs(str).format('HH:mm');
-};
+export function parseFormatDuration(dateFrom, dateTo) {
+  const startTime = dayjs(dateFrom);
+  const endTime = dayjs(dateTo);
+  const durationMinutes = endTime.diff(startTime, 'minute');
 
-export const parseFormatDateInput = (str) => {
-  if (!str) {
-    return '';
-  }
+  const durationDays = Math.floor(durationMinutes / 1440);
+  const remainingMinutes = durationMinutes % 1440;
+  const durationHours = Math.floor(remainingMinutes / 60);
+  const durationsMinutes = remainingMinutes % 60 + 1;
 
-  return dayjs(str).format('DD/MM/YY HH:mm');
-};
+  const durationElements = [durationDays, durationHours, durationsMinutes];
+  const durationResult = [];
 
-export const calculateDuration = (dateFrom, dateTo) => {
-  if (!dateFrom || !dateTo) {
-    return '';
-  }
+  for (let i = 0; i < durationElements.length; i++) {
+    const value = durationElements[i];
+    if (value > 0) {
+      const suffix = TIME_SUFFIXES_LIST[i];
+      const paddedValue = value < 10 ? `0${value}` : value;
+      durationResult.push(`${paddedValue}${suffix}`);
+    }
 
-  const from = dayjs(dateFrom);
-  const to = dayjs(dateTo);
-  const diffMins = Math.max(0, to.diff(from, 'minute'));
-
-  if (diffMins < 60) {
-    return `${diffMins}M`;
   }
 
-  const hours = Math.floor(diffMins / 60);
-  const minutes = diffMins % 60;
+  return durationResult.join(' ') || '00M';
+}
 
-  if (minutes === 0) {
-    return `${hours}H`;
-  }
+export function isPointPresent(point) {
+  return dayjs().isAfter(dayjs(point.dateFrom)) && dayjs().isBefore(dayjs(point.dateTo));
+}
 
-  return `${hours}H ${minutes}M`;
-};
+export function isPointFuture(point) {
+  return dayjs().isBefore(dayjs(point.dateTo));
+}
+
+export function isPointPast(point) {
+  return dayjs().isAfter(dayjs(point.dateFrom));
+}

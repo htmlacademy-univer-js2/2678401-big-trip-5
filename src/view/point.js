@@ -1,13 +1,18 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {TIME_FORMATS} from '../util/data.js';
-import {formatDate, formatDuration} from '../util/utils.js';
+import {TIME_FORMAT_LIST} from '../util/data.js';
+import {parseFormatDate, parseFormatDuration} from '../util/date-time.js';
 
-function creatRoutePointElementTemplate(point, offer, destination) {
+function creatPointViewTemplate(point, offer, destination) {
   const {name} = destination;
   const {type, offers} = offer;
-  const {dateFrom: dateFrom, dateTo: dateTo, basePrice: basePrice, isFavorite: isFavorite} = point;
+  const {
+    dateFrom: dateFrom,
+    dateTo: dateTo,
+    basePrice: basePrice,
+    isFavorite: isFavorite
+  } = point;
 
-  const offersList = offers
+  const offerList = offers
     .map((offerElement) => {
       const offerPrice = offerElement.price;
       const offerTitle = offerElement.title.toLowerCase().split(' ').join('-');
@@ -26,25 +31,25 @@ function creatRoutePointElementTemplate(point, offer, destination) {
 
   return `<li class="trip-events__item">
               <div class="event">
-                <time class="event__date" datetime="${formatDate(dateFrom, TIME_FORMATS['TIME_TAG_VALUE'])}">${formatDate(dateFrom, TIME_FORMATS['DAY'])}</time>
+                <time class="event__date" datetime="${parseFormatDate(dateFrom, TIME_FORMAT_LIST['TIME_TAG_VALUE'])}">${parseFormatDate(dateFrom, TIME_FORMAT_LIST['DAY'])}</time>
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
                 </div>
                 <h3 class="event__title">${type} ${name}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
-                    <time class="event__start-time" datetime="${dateFrom}">${formatDate(dateFrom, TIME_FORMATS['TIME'])}</time>
+                    <time class="event__start-time" datetime="${dateFrom}">${parseFormatDate(dateFrom, TIME_FORMAT_LIST['TIME'])}</time>
                     &mdash;
-                    <time class="event__end-time" datetime=""${dateTo}">${formatDate(dateTo, TIME_FORMATS['TIME'])}</time>
+                    <time class="event__end-time" datetime=""${dateTo}">${parseFormatDate(dateTo, TIME_FORMAT_LIST['TIME'])}</time>
                   </p>
-                  <p class="event__duration">${formatDuration(dateFrom, dateTo)}</p>
+                  <p class="event__duration">${parseFormatDuration(dateFrom, dateTo)}</p>
                 </div>
                 <p class="event__price">
                   &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
-                  ${offersList}
+                  ${offerList}
                 </ul>
                 <button class="event__favorite-btn  event__favorite-btn${favoriteCheck}" type="button">
                   <span class="visually-hidden">Add to favorite</span>
@@ -59,7 +64,7 @@ function creatRoutePointElementTemplate(point, offer, destination) {
             </li>`;
 }
 
-export default class RoutePointElement extends AbstractView {
+export default class PointView extends AbstractView {
   #point = null;
   #offer = null;
   #destination = null;
@@ -79,7 +84,7 @@ export default class RoutePointElement extends AbstractView {
   }
 
   get template() {
-    return creatRoutePointElementTemplate(this.#point, this.#offer, this.#destination);
+    return creatPointViewTemplate(this.#point, this.#offer, this.#destination);
   }
 
   #editHandlerClick = (evt) => {

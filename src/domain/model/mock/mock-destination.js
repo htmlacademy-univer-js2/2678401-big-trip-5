@@ -1,4 +1,4 @@
-export const destinationsElementsMock = [
+export const destinationList = [
   {
     'id': '1',
     'description': 'A timeless tapestry of romance, art, fashion, history, and culinary delights.',
@@ -49,4 +49,3 @@ export const destinationsElementsMock = [
     ]
   }
 ];
-

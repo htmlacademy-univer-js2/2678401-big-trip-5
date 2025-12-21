@@ -1,27 +1,32 @@
-import {isPointPresent, isPointPast, isPointFuture} from './utils.js';
+import {isPointPresent, isPointPast, isPointFuture} from './date-time.js';
 
-export const EVENT_TYPES = [
+export const EVENT_TYPE_LIST = [
   'taxi', 'sightseeing', 'check-in',
   'flight', 'bus', 'train',
   'ship', 'drive', 'restaurant'
 ];
 
-export const TIME_FORMATS = {TIME: 'HH:mm', DAY: 'MMM D', FULL_DATE: 'D/MM/YY HH:mm', TIME_TAG_VALUE: 'YYYY-MM-DD'};
+export const TIME_FORMAT_LIST = {
+  TIME: 'HH:mm',
+  DAY: 'MMM D',
+  FULL_DATE: 'D/MM/YY HH:mm',
+  TIME_TAG_VALUE: 'YYYY-MM-DD'
+};
 
-export const TIME_SUFFIXES = ['D', 'H', 'M'];
+export const TIME_SUFFIXES_LIST = ['D', 'H', 'M'];
 
-export const FILTER_TYPES = {
+export const FILTER_TYPE_LIST = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PRESENT: 'present',
   PAST: 'past'
 };
 
-export const FILTERS = {
-  [FILTER_TYPES.EVERYTHING]: (points) => [...points],
-  [FILTER_TYPES.FUTURE]: (points) => points.filter((point) => isPointFuture(point)),
-  [FILTER_TYPES.PRESENT]: (points) => points.filter((point) => isPointPresent(point)),
-  [FILTER_TYPES.PAST]: (points) => points.filter((point) => isPointPast(point))
+export const FILTER_LIST = {
+  [FILTER_TYPE_LIST.EVERYTHING]: (points) => [...points],
+  [FILTER_TYPE_LIST.FUTURE]: (points) => points.filter((point) => isPointFuture(point)),
+  [FILTER_TYPE_LIST.PRESENT]: (points) => points.filter((point) => isPointPresent(point)),
+  [FILTER_TYPE_LIST.PAST]: (points) => points.filter((point) => isPointPast(point))
 };
 
 export const MODE = {
@@ -29,7 +34,7 @@ export const MODE = {
   EDITING: 'EDITING'
 };
 
-export const SORT_TYPES = [
+export const SORT_TYPE_LIST = [
   'day',
   'event',
   'time',
@@ -37,4 +42,4 @@ export const SORT_TYPES = [
   'offers'
 ];
 
-export const CITIES = ['Paris', 'Amsterdam', 'Barcelona', 'Dublin', 'Vienna'];
+export const CITY_LIST = ['Paris', 'Amsterdam', 'Barcelona', 'Dublin', 'Vienna'];

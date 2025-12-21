@@ -1,5 +1,7 @@
-import Presenter from './presenter/board-presenter.js';
+import BoardPresenter from './presenter/board-presenter.js';
 
-const presenter = new Presenter();
+const boardPresenter = new BoardPresenter();
 
-presenter.init();
+document.addEventListener('DOMContentLoaded', () => {
+  boardPresenter.init();
+});

@@ -1,8 +1,8 @@
-import { destinationsElementsMock } from './mock/mock-destination.js';
+import {destinationList} from './mock/mock-destination.js';
 
-export default class DestinationsModel {
+export default class DestinationModel {
   constructor() {
-    this.destinations = [...destinationsElementsMock];
+    this.destinations = [...destinationList];
   }
 
   getDestinations() {

@@ -1,8 +1,8 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-function createFiltersTemplate(filterItems) {
+function createFilterPointTemplate(filterItems) {
 
-  const filtersList = filterItems
+  const filterList = filterItems
     .map((filter) => {
       const type = filter.type;
       const count = filter.count;
@@ -16,7 +16,7 @@ function createFiltersTemplate(filterItems) {
     .join('');
 
   return `<form class="trip-filters" action="#" method="get">
-                ${filtersList}
+                ${filterList}
                 <button class="visually-hidden" type="submit">Accept filter</button>
               </form>`;
 }
@@ -30,6 +30,6 @@ export default class Filters extends AbstractView {
   }
 
   get template() {
-    return createFiltersTemplate(this.#filters);
+    return createFilterPointTemplate(this.#filters);
   }
 }

@@ -3,7 +3,7 @@ import {getRandomValue} from '/src/util/utils.js';
 const MIN_PRICE = 100;
 const MAX_PRICE = 1500;
 
-export const offersElementsMock = [
+export const offerList = [
   {
     'type': 'taxi',
     'offers': [
