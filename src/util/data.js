@@ -64,9 +64,9 @@ export const METHOD = {
   DELETE: 'DELETE',
 };
 
-export const AUTHORIZATION = 'Basic 234233dasdsgfsd';
+export const AUTHORIZATION = 'Basic er883jdzbdw';
 
-export const END_POINT = 'https://21.objects.pages.academy/big-trip';
+export const END_POINT = 'https://24.objects.htmlacademy.pro/big-trip';
 
 export const TIME_LIMIT = {
   LOWER_LIMIT: 200,
