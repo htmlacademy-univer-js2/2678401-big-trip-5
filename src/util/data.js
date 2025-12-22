@@ -64,7 +64,7 @@ export const METHOD = {
   DELETE: 'DELETE',
 };
 
-export const AUTHORIZATION = 'Basic er883jdzbdw';
+export const AUTHORIZATION = 'Basic er883abcdve';
 
 export const END_POINT = 'https://24.objects.htmlacademy.pro/big-trip';
 
