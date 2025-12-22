@@ -27,11 +27,7 @@ export default class PointPresenter {
     }
   };
 
-  constructor(offer, destination, allDestinations,
-              allOffers, pointList,
-              onModeChange, onDataChange) {
-    this.#offer = offer;
-    this.#destination = destination;
+  constructor(allDestinations, allOffers, pointList, onModeChange, onDataChange) {
     this.#allDestinations = allDestinations;
     this.#allOffers = allOffers;
     this.#pointList = pointList;
@@ -42,7 +38,7 @@ export default class PointPresenter {
   init(point) {
     this.#point = point;
     this.#offer = this.#allOffers.find((offer) => offer.type === point.type ? offer : null);
-    this.#destination = this.#allDestinations.find((destination) => destination.name === point.destination ? destination : null);
+    this.#destination = this.#allDestinations.find((destination) => destination.id === point.destination ? destination : null);
 
     const prevPointComponent = this.#pointTask;
     const prevEditFormComponent = this.#pointEdit;
@@ -106,6 +102,41 @@ export default class PointPresenter {
     if (this.#mode !== MODE.DEFAULT) {
       this.#replaceEditToTask();
     }
+  }
+
+  setSaving() {
+    if (this.#mode === MODE.EDITING) {
+      this.#pointEdit.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === MODE.EDITING) {
+      this.#pointEdit.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  }
+
+  setAborting() {
+    if (this.#mode === MODE.DEFAULT) {
+      this.#pointTask.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#pointEdit.updateElement({
+        isDisabled: false,
+        isDeleting: false,
+        isSaving: false,
+      });
+    };
+
+    this.#pointEdit.shake(resetFormState);
   }
 
   #replaceTaskToEdit() {

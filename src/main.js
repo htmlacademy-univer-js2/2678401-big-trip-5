@@ -1,7 +1,11 @@
 import BoardPresenter from './presenter/board-presenter.js';
+import ApiPointService from './domain/model/api/api-service.js';
+import PointModel from './domain/model/point.js';
+import {END_POINT, AUTHORIZATION} from './util/data.js';
 
 const newPointButton = document.querySelector('.trip-main__event-add-btn');
-const boardPresenter = new BoardPresenter();
+const pointModel = new PointModel({apiPointService: new ApiPointService(END_POINT, AUTHORIZATION)});
+const boardPresenter = new BoardPresenter({pointModel});
 
 const handleNewPointClick = (evt) => {
   evt.preventDefault();
@@ -12,5 +16,7 @@ const handleNewPointClick = (evt) => {
 newPointButton.addEventListener('click', handleNewPointClick);
 
 document.addEventListener('DOMContentLoaded', () => {
-  boardPresenter.init();
+  boardPresenter.startInit();
+  pointModel.init()
+    .finally();
 });

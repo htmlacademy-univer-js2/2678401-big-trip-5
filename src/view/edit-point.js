@@ -13,9 +13,14 @@ function createPointEditingTemplate(point) {
     basePrice: basePrice,
     type: type,
     offers: offers,
-    destination: name,
-    description: description
+    destinationName: name,
+    destinationPictures: pictures,
+    description: description,
+    isDisabled,
+    isSaving,
+    isDeleting
   } = point;
+
 
   const eventTypes = EVENT_TYPE_LIST
     .map((event) =>
@@ -44,6 +49,15 @@ function createPointEditingTemplate(point) {
     })
     .join('');
 
+  const pictureList = pictures
+    .map((picture) => {
+      const src = picture.src;
+      const alt = picture.description;
+
+      return `<img class="event__photo" src="${src}" alt="${alt}">`;
+    })
+    .join('');
+
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
@@ -52,10 +66,10 @@ function createPointEditingTemplate(point) {
                       <span class="visually-hidden">Choose event type</span>
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
                     <div class="event__type-list">
-                      <fieldset class="event__type-group">
+                      <fieldset class="event__type-group" ${isDisabled ? 'disabled' : ''}>
                         <legend class="visually-hidden">Event type</legend>
                         ${eventTypes}
                       </fieldset>
@@ -66,22 +80,27 @@ function createPointEditingTemplate(point) {
                     <label class="event__label  event__type-output" for="event-destination-1">
                       ${type}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(name)}" list="destination-list-1" ${isDisabled ? 'disabled' : ''}>
                     <datalist id="destination-list-1">
-                      <option value="Paris"></option>
+                      <option value="Valencia"></option>
+                      <option value="Venice"></option>
+                      <option value="Madrid"></option>
+                      <option value="Geneva"></option>
+                      <option value="Rome"></option>
+                      <option value="Saint Petersburg"></option>
+                      <option value="Chamonix"></option>
                       <option value="Amsterdam"></option>
-                      <option value="Barcelona"></option>
-                      <option value="Dublin"></option>
-                      <option value="Vienna"></option>
+                      <option value="Munich"></option>
+                      <option value="Den Haag"></option>
                     </datalist>
                   </div>
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${parseFormatDate(dateFrom, TIME_FORMAT_LIST['FULL_DATE'])}">
+                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${parseFormatDate(dateFrom, TIME_FORMAT_LIST['FULL_DATE'])}" ${isDisabled ? 'disabled' : ''}>
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${parseFormatDate(dateTo, TIME_FORMAT_LIST['FULL_DATE'])}">
+                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${parseFormatDate(dateTo, TIME_FORMAT_LIST['FULL_DATE'])}" ${isDisabled ? 'disabled' : ''}>
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -89,11 +108,11 @@ function createPointEditingTemplate(point) {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(String(basePrice))}">
+                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(String(basePrice))}" ${isDisabled ? 'disabled' : ''}>
                   </div>
 
-                  <button class="event__save-btn  btn  btn--blue" type="submit" ${(basePrice > 0 && dateFrom !== '' && dateTo !== '' && name !== '') ? '' : 'disabled'}>Save</button>
-                  <button class="event__reset-btn" type="reset">Delete</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${(basePrice > 0 && dateFrom !== '' && dateTo !== '' && name !== '') ? '' : 'disabled'} ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+                  <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
                   <button class="event__rollup-btn" type="button">
                     <span class="visually-hidden">Open event</span>
                   </button>
@@ -110,6 +129,12 @@ function createPointEditingTemplate(point) {
                   ${description !== '' ? `<section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
                     <p class="event__destination-description">${description}</p>
+
+                    <div class="event__photos-container">
+                      <div class="event__photos-tape">
+                        ${pictureList}
+                      </div>
+                    </div>
                   </section>` : ''}
                 </section>
               </form>
@@ -153,11 +178,13 @@ export default class EditPointView extends AbstractStatefulView {
   }
 
   reset() {
+    this._setState(EditPointView.parsePointToState(this.#point, this.#offer, this.#destination));
     this.updateElement(EditPointView.parseStateToPoint({
       ...this.#point,
       type: this.#offer.type,
       offers: this.#offer.offers,
-      destination: this.#destination.name,
+      destinationName: this.#destination.name,
+      destinationPictures: this.#destination.pictures,
       description: this.#destination.description
     }));
   }
@@ -199,7 +226,9 @@ export default class EditPointView extends AbstractStatefulView {
     }
 
     this.updateElement({
-      destination: newDestination.name,
+      destination: newDestination.id,
+      destinationName: newDestination.name,
+      destinationPictures: newDestination.pictures,
       description: newDestination.description
     });
   };
@@ -281,19 +310,31 @@ export default class EditPointView extends AbstractStatefulView {
       ...point,
       type: offer.type,
       offers: offer.offers,
-      destination: destination.name,
-      description: destination.description
+      destinationName: destination.name,
+      destinationPictures: destination.pictures,
+      description: destination.description,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
     };
   }
 
   static parseStateToPoint(state) {
     const point = {...state};
 
-    if (!point.description) {
+    if (!point.description && !point.destinationName && !point.destinationPictures) {
       point.description = null;
+      point.destinationName = null;
+      point.destinationPictures = null;
     }
 
     delete point.description;
+    delete point.destinationName;
+    delete point.destinationPictures;
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+
     return point;
   }
 }

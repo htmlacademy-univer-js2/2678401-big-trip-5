@@ -3,7 +3,7 @@ import {TIME_FORMAT_LIST} from '../util/data.js';
 import {parseFormatDate, parseFormatDuration} from '../util/date-time.js';
 
 function creatPointViewTemplate(point, offer, destination) {
-  const {name} = destination;
+  const {name: name} = destination;
   const {type, offers} = offer;
   const {
     dateFrom: dateFrom,
